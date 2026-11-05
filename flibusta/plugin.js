@@ -95,13 +95,26 @@ CrossPoint.registerPlugin(async (container, api) => {
       }
       const root = api.dir.slice(0, api.dir.lastIndexOf("/"));
       const name = "flibusta-update";
-      const listing = await fetch("/api/files?path=" + encodeURIComponent(root));
-      if (!listing.ok) throw new Error("Не удалось прочитать папку плагинов.");
-      const existing = (await listing.json()).find((entry) => entry.name === name);
+      const findUpdater = async () => {
+        const listing = await fetch("/api/files?path=" + encodeURIComponent(root), {cache: "no-store"});
+        if (!listing.ok) throw new Error("Не удалось прочитать папку плагинов: HTTP " + listing.status);
+        return (await listing.json()).find((entry) => entry.name.toLowerCase() === name);
+      };
+      let existing = await findUpdater();
       if (existing && !existing.isDirectory) throw new Error("Удалите файл flibusta-update: он мешает создать папку OTA.");
       if (!existing) {
-        const created = await fetch("/mkdir", {method: "POST", body: new URLSearchParams({name, path: root})});
-        if (!created.ok) throw new Error("Не удалось создать папку обновлений на SD-карте.");
+        // Match the multipart request used by CrossPoint's built-in file manager.
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("path", root);
+        const created = await fetch("/mkdir", {method: "POST", body: formData});
+        if (!created.ok) {
+          const detail = (await created.text()).trim().slice(0, 200);
+          if (created.status === 400 && detail === "Folder already exists") existing = await findUpdater();
+          if (!existing?.isDirectory) {
+            throw new Error("Не удалось создать " + root + "/" + name + ": HTTP " + created.status + " — " + detail);
+          }
+        }
       }
       const updater = {
         title: "Flibusta — обновления",

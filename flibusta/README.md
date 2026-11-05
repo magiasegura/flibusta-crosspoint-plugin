@@ -1,4 +1,4 @@
-Flibusta for CrossPoint 1.2.2
+Flibusta for CrossPoint 1.2.3
 
 Search the catalogue of your Flibusta Telegram bot and download EPUB books
 directly to /Books/Flibusta on the reader. After setup no phone or open browser
@@ -74,6 +74,10 @@ The standard installer stages files before replacing them. An SD write failure
 during the final replacements can still leave a mixed plugin; reinstall the
 release manually if that happens. Do not remove the SD card during an update.
 If you change the library server address, press "Включить OTA плагина" again.
+OTA setup uses the same multipart mkdir request as CrossPoint 2.0.0's built-in
+file manager. Existing folder names are matched case-insensitively for FAT cards.
+A directory created during setup is reused; other failures show the actual HTTP
+status, target path and reader response instead of a generic error.
 OTA files use the request's host and transport, so a local server address stays
 local even if WEB_PUBLIC_URL points to a different public domain. A reverse proxy
 must preserve the original Host and, with WEB_TRUST_PROXY=true, pass

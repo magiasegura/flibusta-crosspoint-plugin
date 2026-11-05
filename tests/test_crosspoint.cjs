@@ -9,7 +9,7 @@ const source = readFileSync(resolve(__dirname, "../flibusta/plugin.js"), "utf8")
 
 async function setup({status = 200, body = '{"access_token":"reader-token"}', writeError = false, config,
   root = "/plugins", capabilities = "catalog.bundle_install,catalog.version_tracking", updaterExists = false,
-  mkdirError = false, otaAvailable = true} = {}) {
+  mkdirError = false, otaAvailable = true, updaterName = "flibusta-update", mkdirRace = false} = {}) {
   let render, submit, saveFolder, enableOta;
   const server = {value: "https://library.example/"};
   const code = {value: "1234 5678"};
@@ -30,13 +30,15 @@ async function setup({status = 200, body = '{"access_token":"reader-token"}', wr
   }};
   runInNewContext(source, {
     CrossPoint: {registerPlugin: (fn) => { render = fn; }},
-    TextEncoder, URL, URLSearchParams, btoa,
+    TextEncoder, URL, URLSearchParams, FormData, btoa,
     fetch: async (url, options) => {
       localRequests.push({url, options});
       if (url === "/api/status") return {ok: true, json: async () => ({pluginCapabilities: capabilities})};
       if (url.startsWith("/api/files?")) return {ok: true, json: async () =>
-        updaterExists ? [{name: "flibusta-update", isDirectory: true}] : []};
-      if (url === "/mkdir") return {ok: !mkdirError};
+        updaterExists || (mkdirRace && localRequests.some((request) => request.url === "/mkdir"))
+          ? [{name: updaterName, isDirectory: true}] : []};
+      if (url === "/mkdir") return {ok: !mkdirError && !mkdirRace, status: mkdirRace ? 400 : mkdirError ? 500 : 200,
+        text: async () => mkdirRace ? "Folder already exists" : "Failed to create folder"};
       return {ok: !!config, json: async () => config};
     }
   });
@@ -185,6 +187,7 @@ test("OTA installs a separate native updater without touching the session or boo
     assert.ok(!JSON.stringify(updater).includes("secret"));
     assert.match(page.message.textContent, /OTA включено/);
     const mkdir = page.localRequests.find((request) => request.url === "/mkdir");
+    assert.ok(mkdir.options.body instanceof FormData, "use the same multipart request as CrossPoint's file manager");
     assert.equal(mkdir.options.body.get("path"), root);
   }
 });
@@ -194,6 +197,30 @@ test("OTA can reconfigure an existing updater without mkdir", async () => {
   await page.enableOta();
   assert.equal(page.writes.length, 1);
   assert.ok(!page.localRequests.some((request) => request.url === "/mkdir"));
+});
+
+test("OTA recognizes an existing folder regardless of FAT filename case", async () => {
+  const page = await setup({config: {server: "https://library.example"}, updaterExists: true,
+    updaterName: "FLIBUSTA-UPDATE"});
+  await page.enableOta();
+  assert.ok(!page.localRequests.some((request) => request.url === "/mkdir"));
+  assert.equal(page.writes.length, 1);
+});
+
+test("OTA rechecks a folder created between listing and mkdir", async () => {
+  const page = await setup({config: {server: "https://library.example"}, mkdirRace: true});
+  await page.enableOta();
+  assert.equal(page.writes.length, 1);
+  assert.match(page.message.textContent, /OTA включено/);
+});
+
+test("a failed mkdir exposes the HTTP status, path and device response", async () => {
+  const page = await setup({config: {server: "https://library.example"}, mkdirError: true});
+  await page.enableOta();
+  assert.equal(page.writes.length, 0);
+  assert.match(page.message.textContent, /HTTP 500/);
+  assert.match(page.message.textContent, /\/plugins\/flibusta-update/);
+  assert.match(page.message.textContent, /Failed to create folder/);
 });
 
 test("unsupported firmware or failed folder creation cannot report OTA success", async () => {

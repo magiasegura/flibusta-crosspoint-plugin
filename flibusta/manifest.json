@@ -2,7 +2,7 @@
   "name": "flibusta",
   "title": "Flibusta",
   "description": "Search your bot's catalogue and download EPUB books on the reader.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "mount": "settings",
   "files": ["manifest.json", "device.json", "plugin.js", "README.md"]
 }
