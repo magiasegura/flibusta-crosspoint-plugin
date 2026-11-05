@@ -1,0 +1,8 @@
+{
+  "name": "flibusta",
+  "title": "Flibusta",
+  "description": "Search your bot's catalogue and download EPUB books on the reader.",
+  "version": "1.2.1",
+  "mount": "settings",
+  "files": ["manifest.json", "device.json", "plugin.js", "README.md"]
+}

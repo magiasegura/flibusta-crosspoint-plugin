@@ -1,0 +1,5 @@
+dist/
+__pycache__/
+flibusta/config.json
+flibusta/token.json
+*.tmp

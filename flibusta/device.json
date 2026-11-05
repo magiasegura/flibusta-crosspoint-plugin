@@ -1,0 +1,23 @@
+{
+  "title": "Flibusta",
+  "description": "Search and download EPUB. Set up with a /web code in the reader's web interface.",
+  "config": {"file": "config.json"},
+  "token": {"file": "config.json", "path": "access_token"},
+  "browse": {
+    "format": "json",
+    "url": "{cfg.server}/api/crosspoint/books?offset={offset}&limit={limit}",
+    "headers": {"Authorization": "Bearer {token}"},
+    "items": "items",
+    "fields": {"id": "id", "title": "title", "author": "author"},
+    "page_size": 8,
+    "search": {
+      "url": "{cfg.server}/api/crosspoint/books?q={query}&offset={offset}&limit={limit}"
+    }
+  },
+  "download": {
+    "url": "{cfg.server}/api/crosspoint/download/{id}/epub",
+    "headers": {"Authorization": "Bearer {token}"},
+    "dest_dir": "/Books/Flibusta",
+    "filename": "{id} - {title}.epub"
+  }
+}
