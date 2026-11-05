@@ -1,4 +1,4 @@
-Flibusta for CrossPoint 1.2.1
+Flibusta for CrossPoint 1.2.2
 
 Search the catalogue of your Flibusta Telegram bot and download EPUB books
 directly to /Books/Flibusta on the reader. After setup no phone or open browser
@@ -25,6 +25,20 @@ Installation and setup
 6. Stop the reader's web server. Open Home > Plugins > Flibusta on the reader.
    The first list is empty; select Search and type a title or author.
 7. Select a book and Fetch. Open the downloaded book from Library or Files.
+
+CrossPoint 2.0.0 cannot auto-open the search keyboard from a plugin manifest.
+The initial screen now says "Поиск: кнопка справа вверху"; tap its Search icon.
+
+EPUB transfer (requires the updated library web service)
+The server downloads the complete EPUB before responding, checks ZIP integrity,
+mimetype and container.xml, and returns the actual file size. Invalid or truncated
+archives fail before a successful download response. Byte ranges are supported for
+resuming a dropped transfer. Books above 100 MiB, or archives expanding beyond
+100 MiB, are refused. The server keeps up to 1 MiB in RAM and spills larger files
+to a temporary file which is removed when the request ends.
+After updating the server, download a previously broken book again; the old file
+on the SD card cannot repair itself. Firmware crash elimination still needs a
+physical-device check.
 
 Download folder
 In the Flibusta web card, change "Папка для книг на SD-карте" and press
