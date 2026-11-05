@@ -117,8 +117,8 @@ CrossPoint.registerPlugin(async (container, api) => {
         }
       }
       const updater = {
-        title: "Flibusta — обновления",
-        description: "Обновление плагина по Wi-Fi. Прошивка и настройки не меняются.",
+        title: "Обновить Flibusta",
+        description: "Обновление плагина по Wi-Fi.",
         browse: {
           url: savedConfig.server + "/api/crosspoint/updates", items: "items",
           fields: {id: "id", title: "title", version: "version", description: "description"},
@@ -130,7 +130,7 @@ CrossPoint.registerPlugin(async (container, api) => {
       // A separate manifest avoids the book folder's dest_dir override during installation.
       await writeJson(root + "/" + name + "/device.json", updater);
       status.textContent = "OTA включено. Отключите веб-сервер читалки и откройте Home → Plugins → " +
-        "Flibusta — обновления. Выберите Flibusta и Update. Обновляются только файлы плагина.";
+        "Обновить Flibusta. Выберите Flibusta и Update. Обновляются только файлы плагина.";
     } catch (error) {
       status.textContent = error.message || "Не удалось настроить OTA плагина.";
     } finally {

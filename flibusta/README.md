@@ -60,7 +60,9 @@ OTA plugin updates (firmware is not changed)
    No new /web code is needed for an already configured plugin.
 3. The button creates a small flibusta-update plugin beside this one. It has no
    token, no book-folder setting and no access to your sign-in code.
-4. Stop the reader's web server. Open Home > Plugins > Flibusta — обновления.
+4. Stop the reader's web server. Open Home > Plugins > Обновить Flibusta.
+   After upgrading from 1.2.4 or earlier, click «Включить OTA плагина» again in
+   the web card to refresh the existing updater's title and description.
    Select Flibusta. A newer server version shows Update; the current version
    shows Installed. Confirm Update, then reopen the regular Flibusta plugin.
 5. For future updates the administrator updates the server code and restarts

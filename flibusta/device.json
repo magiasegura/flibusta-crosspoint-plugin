@@ -1,6 +1,6 @@
 {
   "title": "Flibusta",
-  "description": "Search and download EPUB. Set up with a /web code in the reader's web interface.",
+  "description": "Поиск и скачивание книг.",
   "config": {"file": "config.json"},
   "token": {"file": "config.json", "path": "access_token"},
   "browse": {
