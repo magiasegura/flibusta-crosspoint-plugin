@@ -1,4 +1,4 @@
-Flibusta for CrossPoint 1.2.3
+Flibusta for CrossPoint 1.2.4
 
 Search the catalogue of your Flibusta Telegram bot and download EPUB books
 directly to /Books/Flibusta on the reader. After setup no phone or open browser
@@ -27,7 +27,7 @@ Installation and setup
 7. Select a book and Fetch. Open the downloaded book from Library or Files.
 
 CrossPoint 2.0.0 cannot auto-open the search keyboard from a plugin manifest.
-The initial screen now says "Поиск: кнопка справа вверху"; tap its Search icon.
+The initial screen says "Нажмите на лупу"; tap the Search icon in the top-right corner.
 
 EPUB transfer (requires the updated library web service)
 The server downloads the complete EPUB before responding, checks ZIP integrity,

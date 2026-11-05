@@ -10,7 +10,7 @@
     "items": "items",
     "fields": {"id": "id", "title": "title", "author": "author"},
     "page_size": 8,
-    "lists": [{"title": "Поиск: кнопка справа вверху"}],
+    "lists": [{"title": "Нажмите на лупу"}],
     "search": {
       "url": "{cfg.server}/api/crosspoint/books?q={query}&offset={offset}&limit={limit}"
     }
